@@ -15,6 +15,7 @@
     "babel-polyfill": "^6.7.2",
     "bcrypt-as-promised": "^1.1.0",
     "bluebird": "^3.3.4",
+    "gulp-print": "^2.0.1",
     "isdev": "^1.0.1",
     "jquery": "^2.2.2",
     "koa": "^2.0.0-alpha.3",
@@ -26,6 +27,8 @@
     "koa-passport": "^2.1.0",
     "koa-redis": "^2.0.1",
     "koa-route": "^3.1.0",
+    "koa-socket": "^4.2.1",
+    "koa-socket-passport": "0.0.2",
     "koa-static": "^2.0.0",
     "lasso": "^2.1.5",
     "lasso-less": "^2.1.2",
@@ -36,6 +39,7 @@
     "marko-widgets": "^6.0.0",
     "redis": "^2.5.2",
     "redis-commands": "^1.1.0",
+    "shortid": "^2.2.4",
     "source-map-support": "^0.4.0",
     "then-redis": "^2.0.0"
   },
@@ -48,6 +52,7 @@
     "gulp-changed-in-place": "^2.0.3",
     "gulp-filter": "^4.0.0",
     "gulp-if": "^2.0.0",
+    "gulp-load-plugins": "^1.2.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",
     "modclean": "^1.2.7"
