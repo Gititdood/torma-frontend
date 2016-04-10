@@ -3,7 +3,23 @@ import shortid from 'shortid';
 import { extend } from 'lodash';
 
 import { db } from './';
+/* This whole section is problematic to me 
 
+I'd like this module to work directly from the /login directory
+I doubt we need an extra db file. The connection to the redis DB should be opened and closed after querying.
+I'd like the redis data to be in the format
+
+user:_username_ --> hash
+{
+  password:_bcrypt password_
+  enabled:T\F
+  ... 
+  other customization settings per user
+}
+
+
+
+*/
 export default class User {
   constructor(data) {
     this.id = shortid.generate();
