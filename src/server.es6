@@ -36,11 +36,12 @@ io.attach(app);
 
 /* Passport (user management) */
 import passport from 'koa-passport';
-import User from 'db/user';
-passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser(async(id, done) => {
+import User from './db/user';
+passport.serializeUser((user, done) => done(null, user.username));
+passport.deserializeUser(async(username, done) => {
   try {
-    var user = await User.findById(id);
+    const userResults = await User.find(username);
+    const user = new User(userResults);
     done(null, user);
   } catch (err) {
     done(err);
@@ -88,6 +89,29 @@ app.use(async(ctx, next) => {
     ctx.status = 500;
     ctx.body = err.stack;
   }
+});
+
+/* Checks if user did made a post request within X minutes */
+app.use(async(ctx, next) => {
+  // Check if user is logged in
+  if(ctx.req.user) {
+    // Minimum timespan in seconds between each POST request
+    const limit = 300;
+    // Timestamp
+    const currentRequest = Math.floor(Date.now() / 1000);
+
+    let user = ctx.req.user;
+
+    // If time between requests is bigger than limit => log user out
+    if(user.lastRequest && (currentRequest - user.lastRequest) > limit) {
+      ctx.logout();
+    } else if(ctx.req.method == "POST") {
+      // Log request if user makes POST request
+      user.lastRequest = currentRequest;
+      await user.save();
+    }
+  }
+  await next();
 });
 
 /* Routes */

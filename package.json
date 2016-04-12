@@ -39,7 +39,6 @@
     "marko-widgets": "^6.0.0",
     "redis": "^2.5.2",
     "redis-commands": "^1.1.0",
-    "shortid": "^2.2.4",
     "source-map-support": "^0.4.0",
     "then-redis": "^2.0.0"
   },

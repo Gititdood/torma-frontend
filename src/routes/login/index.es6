@@ -9,15 +9,27 @@ app.use(get('/login', async(ctx, next) => {
 }));
 
 app.use(post('/login', async(ctx, next) => {
+
   var fields = ctx.request.body.fields;
-  var user = await User.findByUsername(fields.username);
-  if (!user) {
-    user = new User({ username: fields.username });
-    await user.savePassword(fields.password);
+  var userResults = await User.find(fields.username);
+
+  if(userResults) {
+    let user = new User(userResults);
+
+    /* Checks if password is correct */
+    if(await user.verifyPassword(fields.password)) {
+      await ctx.login(user);
+      /* Log initial request for currenct session */
+      user.lastRequest = Math.floor(Date.now() / 1000);
+      await user.save();
+      ctx.body = JSON.stringify(user);
+    } else {
+      ctx.status = 401;
+      ctx.body = "Incorrect password.";
+    }
+  } else {
+    ctx.status = 401;
+    ctx.body = "User not found.";
   }
-  if (true !== await user.verifyPassword(fields.password)) {
-    return ctx.throw(401, 'Incorrect password');
-  }
-  await ctx.login(user);
-  ctx.redirect('/');
+
 }));

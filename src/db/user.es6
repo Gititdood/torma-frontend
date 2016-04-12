@@ -1,9 +1,8 @@
 import bcrypt from 'bcrypt-as-promised';
-import shortid from 'shortid';
 import { extend } from 'lodash';
 
 import { db } from './';
-/* This whole section is problematic to me 
+/* This whole section is problematic to me
 
 I'd like this module to work directly from the /login directory
 I doubt we need an extra db file. The connection to the redis DB should be opened and closed after querying.
@@ -13,7 +12,7 @@ user:_username_ --> hash
 {
   password:_bcrypt password_
   enabled:T\F
-  ... 
+  ...
   other customization settings per user
 }
 
@@ -22,7 +21,6 @@ user:_username_ --> hash
 */
 export default class User {
   constructor(data) {
-    this.id = shortid.generate();
     extend(this, data);
     if (this.password)
       throw new Error('Please remove the `.password` property and use `.savePassword(password)` (to save the hash) instead');
@@ -30,12 +28,14 @@ export default class User {
   async save() {
     console.log('Saving user');
     try {
-      await db.hmset('user:' + this.id, this);
+      // Creates an hash from the username (removes white space etc.) to create a queryable key
+      const userhash = new Buffer(this.username).toString('base64');
+      await db.hmset('user:' + userhash, this);
     } catch (err) {
-      console.error('Use not saved. Error:', err.message);
+      console.error('User not saved. Error:', err.message);
       throw err;
     }
-    console.log('Use saved');
+    console.log('User saved');
     return this;
   }
   async savePassword(password) {
@@ -46,28 +46,15 @@ export default class User {
   }
   async verifyPassword(password) {
     try {
-      await bcrypt.compare(password, this.hash);
-      return true;
+        await bcrypt.compare(password, this.hash);
+        return true;
     } catch (err) {
-      return false;
+        return false;
     }
   }
-  static async findById(id) {
-    return db.hgetall('user:' + id);
-  }
-  static async findByUsername(username) {
-    // This could get complicated with redis...
-    // console.log('finding by username:', username);
-    // db.keys('usera:*', (err, users) => {
-    //   if (err) return cb(err);
-    //   if (!users || !users.length) return cb();
-    //   for (let i = 0; i < users.length; i++) {
-    //     users[i]
-    //   };
-    //   console.log('err:', err);
-    //   console.log('users:', users);
-    //   // if (err) return cb(err);
-    //   // if (!users) return cb();
-    // });
+  /* Find user by username */
+  static async find(username) {
+      const userhash = new Buffer(username).toString('base64');
+      return db.hgetall('user:' + userhash);
   }
 }
