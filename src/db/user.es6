@@ -2,23 +2,7 @@ import bcrypt from 'bcrypt-as-promised';
 import { extend } from 'lodash';
 
 import { db } from './';
-/* This whole section is problematic to me
 
-I'd like this module to work directly from the /login directory
-I doubt we need an extra db file. The connection to the redis DB should be opened and closed after querying.
-I'd like the redis data to be in the format
-
-user:_username_ --> hash
-{
-  password:_bcrypt password_
-  enabled:T\F
-  ...
-  other customization settings per user
-}
-
-
-
-*/
 export default class User {
   constructor(data) {
     extend(this, data);
@@ -47,8 +31,12 @@ export default class User {
   async verifyPassword(password) {
     try {
         await bcrypt.compare(password, this.hash);
+		// so this is what I don't understand. Where is that function returning? Does it just try to get a true and err out if not?
+		// How do I just get one element of the hash, (e.g ) why do we need to duplicate the entire hash? In the grand scheme of things why not just pull the part we need, 
+		// or write to the section of the redis hash or part we need? Isn't it duplicating memory usage? Obviously it would not be a huge deal since we are talking bytes, but what is the advantage to doing that really?
         return true;
     } catch (err) {
+		
         return false;
     }
   }
