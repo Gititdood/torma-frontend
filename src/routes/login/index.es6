@@ -18,6 +18,7 @@ app.use(post('/login', async(ctx, next) => {
 
     /* Checks if password is correct */
     if(await user.verifyPassword(fields.password)) {
+      /* Start session for user */
       await ctx.login(user);
       /* Log initial request for currenct session */
       user.lastRequest = Math.floor(Date.now() / 1000);

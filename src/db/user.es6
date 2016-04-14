@@ -30,13 +30,15 @@ export default class User {
   }
   async verifyPassword(password) {
     try {
+        // password: A string, usually user definied through input, which will be converted to a bcrypt hash
+        // this.hash: the hashed password of the already fetched user object (for example: routes/login/index.es6:17)
+        // compare password and this.hash
+        // bcrypt.compare will throw an error (by default) if the two hashes do not match
         await bcrypt.compare(password, this.hash);
-		// so this is what I don't understand. Where is that function returning? Does it just try to get a true and err out if not?
-		// How do I just get one element of the hash, (e.g ) why do we need to duplicate the entire hash? In the grand scheme of things why not just pull the part we need, 
-		// or write to the section of the redis hash or part we need? Isn't it duplicating memory usage? Obviously it would not be a huge deal since we are talking bytes, but what is the advantage to doing that really?
+        // return true if they match and no error was thrown
         return true;
     } catch (err) {
-		
+		// if bcrypt.compare throws an error, return false since the passwords did not match
         return false;
     }
   }
