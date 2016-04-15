@@ -2,6 +2,7 @@
   "dependencies": [
     { "type": "js", "url": "/socket.io/socket.io.js" },
     "require: ./login/widget",
-    "require: ./home/widget"
+    "require: ./home/widget",
+    "require: ./users/widget"
   ]
 }

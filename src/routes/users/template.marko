@@ -1,0 +1,32 @@
+layout-use('../layout.marko')
+  layout-put into='content'
+    .dynamic w-bind='./widget'
+      h1 - Users
+      #create-user
+        h2 - Create User
+        form class='create-user' ng-submit='createUser()'
+          p
+            label - Username
+            input name='username' type='text' placeholder='username' autofocus ng-model="username"
+          p
+            label - Password
+            input name='password' type='text' placeholder='password' ng-model="password"
+          button#create type='submit' - Create User
+        hr
+        h2 - User List
+        table.users
+          thead
+            tr
+              td - Username
+              td - Change Password
+              td - Action
+          tbody
+            tr ng-repeat='user in data track by $index'
+              td - {{user.username}}
+              td
+                form class='change-password' ng-submit='changePassword(user)'
+                  input name='password' type='text' placeholder='password' ng-model="userPassword[$index]"
+                  button.change type='submit' - Change Password
+              td
+                a.button - Lockout
+                a.button href='#' ng-click='deleteUser(user)' - Delete

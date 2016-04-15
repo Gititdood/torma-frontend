@@ -9,6 +9,18 @@ export default class User {
     if (this.password)
       throw new Error('Please remove the `.password` property and use `.savePassword(password)` (to save the hash) instead');
   }
+  static async all() {
+    let keys = await db.keys("user:*");
+    let users = [];
+
+    for(const i in keys) {
+      let user = await db.hgetall(keys[i]);
+      users.push(user);
+    }
+
+    return users;
+  }
+
   async save() {
     console.log('Saving user');
     try {
@@ -42,9 +54,15 @@ export default class User {
         return false;
     }
   }
+
+  async delete() {
+    const userhash = new Buffer(this.username).toString('base64');
+    return db.del('user:' + userhash);
+  }
+
   /* Find user by username */
   static async find(username) {
-      const userhash = new Buffer(username).toString('base64');
-      return db.hgetall('user:' + userhash);
+    const userhash = new Buffer(username).toString('base64');
+    return db.hgetall('user:' + userhash);
   }
 }

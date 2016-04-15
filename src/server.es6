@@ -117,6 +117,7 @@ app.use(async(ctx, next) => {
 /* Routes */
 require('./routes/home');
 require('./routes/login');
+require('./routes/users');
 
 /* Socket routes */
 require('./routes/socket');
