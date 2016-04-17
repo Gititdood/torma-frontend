@@ -40,6 +40,11 @@ app.controller('app', $scope => {
       // POST to API
       // TODO: I suggest we introduce a different way to make AJAX request
       //       jQuery is bloated and barely supports PUT and DELETE
+	  
+	  //I'm ALL for reducing bloat. 100%! however, what do you recommend? I want to discuss the entire scope of the project because displaying sensor data will require graphs, a lot of ajax data back and forth, menus etc.
+	  Most of the existing modules I've seen basically use jquery for everything! I also would like to implement a way for the user to CHOOSE the frequency of his updates allowing for low bandwidth usage. This feature would make people using data networks (HSPA\LTE) to save "data" feel free to suggest ideas on how to reduce data usage :P
+	  
+	  
       $.post('/users/changepassword',
         {
           username: user.username,
